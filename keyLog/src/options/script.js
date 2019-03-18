@@ -42,7 +42,6 @@ function createCell(data) {
       cells += "<td><a href=" + v + ">" + v + "</a></td>";
     } else {
       let match = /(user|name|mail|login|usr|pass|key)/.test(v) ? "match": "";
-      console.log(match);
       cells += '<td class="' + match + '">' + v + '</td>';
     }
 
