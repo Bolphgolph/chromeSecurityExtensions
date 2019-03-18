@@ -1,31 +1,23 @@
 {
   "name": "Chrome Keylogger",
-  "version": "1.0",
-  "description": "Build an Extension!",
-  "permissions": [
-    "<all_urls>",
-    "tabs",
-    "storage",
-    "unlimitedStorage"
-  ],
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  "page_action": {
-    "default_popup": "popup/popup.html",
-    "default_icon": {
-      "16": "images/img16.png",
-      "32": "images/img32.png",
-      "48": "images/img48.png",
-      "128": "images/img128.png"
-    }
-  },
+  "version": "0.1",
+  "manifest_version": 4,
+  "description": "Simple Chrome Keylogger",
+  "homepage_url": "http://www.ericzhang.me/projects/chromelogger/",
   "icons": {
     "16": "images/img16.png",
     "32": "images/img32.png",
     "48": "images/img48.png",
     "128": "images/img128.png"
   },
-  "manifest_version": 2
+  "options_page": "src/options/index.html",
+  "background": {
+    "scripts": ["src/inject/inject.js"]
+  },
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "storage",
+    "unlimitedStorage"
+  ]
 }

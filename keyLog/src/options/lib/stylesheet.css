@@ -1,0 +1,43 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  padding: 32px;
+}
+
+#header {
+  margin-bottom: 32px;
+}
+
+#logo{
+  width: 128px;
+  height: auto;
+  margin-right: 32px;
+  float: left;
+}
+
+h1 {
+  font-family: helvetica;
+  font-size: 64px;
+  line-height: 128px;
+}
+
+table {
+  padding: 16px;
+  border-collapse: collapse;
+}
+
+th, td{
+  padding: 16px;
+}
+
+th{
+  background: #455A64;
+  text-align: left;
+}
+
+td{
+  background: #CFD8DC;
+}
