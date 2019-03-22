@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  padding: 32px;
+}
+
+#header {
+  margin-bottom: 32px;
+}
+
+#logo {
+  width: 128px;
+  height: auto;
+  margin-right: 32px;
+  float: left;
+}
+
+h1 {
+  font-family: helvetica;
+  font-size: 64px;
+  line-height: 128px;
+}
+
